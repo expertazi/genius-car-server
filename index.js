@@ -1,12 +1,12 @@
 const express = require("express");
 const { MongoClient } = require("mongodb");
-const ObjectId = require('mongodb').ObjectId;
+const ObjectId = require("mongodb").ObjectId;
 
-const cors = require('cors')
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // middle ware
 app.use(cors());
@@ -24,31 +24,31 @@ async function run() {
     const database = client.db("carMechanic");
     const serviceCollection = database.collection("services");
 
-//  get api 
-app.get('/services',async(req,res)=>{
-  const cursor = serviceCollection.find({});
-  const services = await cursor.toArray();
-  res.send(services)
-})
+    //  get api
+    app.get("/services", async (req, res) => {
+      const cursor = serviceCollection.find({});
+      const services = await cursor.toArray();
+      res.send(services);
+    });
 
-// get simple service 
-app.get('/services/:id', async(req,res)=>{
-    const id = req.params.id;
-  console.log('geting spe',id);
-  const query = {_id:ObjectId(id)};
-  const service = await serviceCollection.findOne(query);
-  res.json(service);
-})
+    // get simple service
+    app.get("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("geting spe", id);
+      const query = { _id: ObjectId(id) };
+      const service = await serviceCollection.findOne(query);
+      res.json(service);
+    });
 
     // post api
     app.post("/services", async (req, res) => {
-       const service = req.body;
-      console.log('hit the post api',service) 
-     
+      const service = req.body;
+      console.log("hit the post api", service);
+
       const result = await serviceCollection.insertOne(service);
       console.log(result);
 
-      res.json(result)
+      res.json(result);
     });
   } finally {
     // await client.close();
